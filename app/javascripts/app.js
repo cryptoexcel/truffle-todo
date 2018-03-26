@@ -71,7 +71,23 @@ window.App = {
       console.log(err)
     })
   },
-
+  addPriorityTodo: function () {
+    var self = this;
+    let task = prompt('Enter Todo Text', "")
+    let amount = prompt('How much you want to pay', 0.01)
+    TodoApp.deployed().then((todoContract) => {
+      return todoContract.addPriorityTodo(task, {
+        from: account,
+        gas: 4712388,
+        gasPrice: 10000000000,
+        value: web3.toWei(amount)
+      })
+    }).then((obj) => {
+      self.consoleIt('transaction done with id ' + obj.tx);
+    }).catch((err) => {
+      console.log(err)
+    })
+  },
   getTodos: function () {
     var self = this;
     TodoApp.deployed().then((todoContract) => {
@@ -118,7 +134,8 @@ window.App = {
       let isComplete = obj[2];
       let completed_by = obj[3];
       let complete_at = web3.toBigNumber(obj[4]).toNumber();
-      self.consoleIt("Task :" + task + " Owner: " + owner + " is Completed " + isComplete + " completed by " + completed_by + " completed at" + new Date(complete_at));
+      let eth_paid = web3.toBigNumber(obj[5]).toNumber();
+      self.consoleIt("Task :" + task + " Owner: " + owner + " is Completed " + isComplete + " completed by " + completed_by + " completed at" + new Date(complete_at) + " eth paid " + web3.fromWei(eth_paid));
     }).catch((err) => {
       console.log(err)
     })
